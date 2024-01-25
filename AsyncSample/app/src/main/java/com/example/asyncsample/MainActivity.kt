@@ -1,6 +1,7 @@
 package com.example.asyncsample
 
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
@@ -10,6 +11,7 @@ import android.widget.TextView
 import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.HandlerCompat
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStream
@@ -26,7 +28,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val DEBUG_TAG = "AsyncSample"
         private const val WEATHERINFO_URL = "https://api.openweathermap.org/data/2.5/weather?lang=ja"
-        private const val APP_ID = ""
+        private const val APP_ID = "9f3ab1e7ced559d013692e82ff4f65ea"
     }
 
     private var _list: MutableList<MutableMap<String, String>> = mutableListOf()
@@ -64,32 +66,50 @@ class MainActivity : AppCompatActivity() {
 
     @UiThread
     private fun receiveWeatherInfo(urlFull: String) {
-        val backgroundReceiver = WeatherInfoBackgroundReceiver(urlFull)
+        val tvWeatherTelop = findViewById<TextView>(R.id.tvWeatherTelop)
+        val tvWeatherDesc = findViewById<TextView>(R.id.tvWeatherDesc)
+        tvWeatherTelop.text = ""
+        tvWeatherDesc.text = ""
+        val handler = HandlerCompat.createAsync(mainLooper)
+        val backgroundReceiver = WeatherInfoBackgroundReceiver(handler, urlFull)
         val executeService = Executors.newSingleThreadExecutor()
-        val future = executeService.submit(backgroundReceiver)
-        val result = future.get()
-        showWeatherInfo(result)
+        executeService.submit(backgroundReceiver)
+    }
+
+    private inner class WeatherInfoReceivePostExecutor(result: String): Runnable {
+        private val _result = result
+        @UiThread
+        override fun run() {
+            val rootJSON = JSONObject(_result)
+            val cityName = rootJSON.getString("name")
+            val coordJson = rootJSON.getJSONObject("coord")
+            val latitude = coordJson.getString("lat")
+            val longitude = coordJson.getString("lon")
+            val weatherJSONArray = rootJSON.getJSONArray("weather")
+            val weatherJSON = weatherJSONArray.getJSONObject(0)
+            val weather = weatherJSON.getString("description")
+            val telop = "${cityName}の天気"
+            val desc = "現在は${weather}です。\n緯度は${latitude}度で軽度は${longitude}度です。"
+            val tvWeatherTelop = findViewById<TextView>(R.id.tvWeatherTelop)
+            val tvWeatherDesc = findViewById<TextView>(R.id.tvWeatherDesc)
+            tvWeatherTelop.text = telop
+            tvWeatherDesc.text = desc
+        }
     }
 
     @UiThread
-    private fun showWeatherInfo(result: String) {
-        val rootJSON = JSONObject(result)
-        val cityName = rootJSON.getString("name")
-        val coordJson = rootJSON.getJSONObject("coord")
-        val latitude = coordJson.getString("lat")
-        val longitude = coordJson.getString("lon")
-        val weatherJSONArray = rootJSON.getJSONArray("weather")
-        val weatherJSON = weatherJSONArray.getJSONObject(0)
-        val weather = weatherJSON.getString("description")
-        val telop = "${cityName}の天気"
-        val desc = "現在は${weather}です。\n緯度は${latitude}度で軽度は${longitude}度です。"
-        val tvWeatherTelop = findViewById<TextView>(R.id.tvWeatherTelop)
+    private fun addMsg(msg: String) {
         val tvWeatherDesc = findViewById<TextView>(R.id.tvWeatherDesc)
-        tvWeatherTelop.text = telop
-        tvWeatherDesc.text = desc
+        var msgNow = tvWeatherDesc.text
+        if (!msgNow.equals("")) {
+            msgNow = "${msgNow}\n"
+        }
+        msgNow = "${msgNow}${msg}"
+        tvWeatherDesc.text = msgNow
     }
 
-    private inner class WeatherInfoBackgroundReceiver(url: String): Callable<String> {
+    private inner class WeatherInfoBackgroundReceiver(handler: Handler, url: String): Runnable {
+        private val _handler = handler
         private val _url = url
         private fun is2String(stream: InputStream?): String {
             val sb = StringBuilder()
@@ -104,7 +124,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         @WorkerThread
-        override fun call(): String {
+        override fun run() {
+            var progressUpdate = ProgressUpdateExecutor("バックグラウンド処理開始")
+            _handler.post(progressUpdate)
             var result = ""
             val url = URL(_url)
             val con = url.openConnection() as HttpURLConnection
@@ -112,16 +134,33 @@ class MainActivity : AppCompatActivity() {
             con.readTimeout = 1000
             con.requestMethod = "GET"
             try {
+                progressUpdate = ProgressUpdateExecutor("Webアクセス開始")
+                _handler.post(progressUpdate)
                 con.connect()
                 val stream = con.inputStream
                 result = is2String(stream)
                 stream.close()
+                progressUpdate = ProgressUpdateExecutor("Webアクセス終了")
+                _handler.post(progressUpdate)
             }
             catch (ex: SocketTimeoutException) {
                 Log.w(DEBUG_TAG, "通信タイムアウト", ex)
             }
             con.disconnect()
-            return result
+            progressUpdate = ProgressUpdateExecutor("バックグラウンド処理終了")
+            _handler.post(progressUpdate)
+
+            val postExecutor = WeatherInfoReceivePostExecutor(result)
+            _handler.post(postExecutor)
+        }
+    }
+
+    private inner class ProgressUpdateExecutor(msg: String): Runnable {
+        private val _msg = msg
+
+        @UiThread
+        override fun run() {
+            addMsg(_msg)
         }
     }
 
