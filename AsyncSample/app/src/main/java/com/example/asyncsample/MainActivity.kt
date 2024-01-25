@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         private const val DEBUG_TAG = "AsyncSample"
         private const val WEATHERINFO_URL =
             "https://api.openweathermap.org/data/2.5/weather?lang=ja"
-        private const val APP_ID = "9f3ab1e7ced559d013692e82ff4f65ea"
+        private const val APP_ID = ""
     }
 
     private var _list: MutableList<MutableMap<String, String>> = mutableListOf()
