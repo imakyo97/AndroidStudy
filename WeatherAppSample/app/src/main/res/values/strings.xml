@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">現在の天気</string>
+    <string name="tv_description">都市名を入力してください</string>
+    <string name="et_hint">都市名</string>
+    <string name="tv_temp_max_label">最高気温</string>
+    <string name="tv_temp_min_label">最低気温</string>
+</resources>
