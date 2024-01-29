@@ -2,6 +2,7 @@ package com.example.weatherappsample
 
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
+import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -23,8 +24,8 @@ class ApiClient {
         .build()
     private val apiService = retrofit.create(ApiService::class.java)
 
-    suspend fun featchWeather(city: String): WeatherData {
-        return apiService.featchWeather(
+    fun fetchWeather(city: String): Call<WeatherData> {
+        return apiService.fetchWeather(
             API_KEY, "metric", "ja", city,
         )
     }

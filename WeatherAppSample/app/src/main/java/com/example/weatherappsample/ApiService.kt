@@ -1,14 +1,15 @@
 package com.example.weatherappsample
 
+import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface ApiService {
     @GET("weather")
-    suspend fun featchWeather(
+    fun fetchWeather(
         @Query("appId") appId: String,
         @Query("units") units: String,
         @Query("lang") lang: String,
         @Query("q") city: String
-    ): WeatherData
+    ): Call<WeatherData>
 }
