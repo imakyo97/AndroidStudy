@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
 
     private inner class OnCityEditorActionListener : TextView.OnEditorActionListener {
         override fun onEditorAction(p0: TextView?, p1: Int, p2: KeyEvent?): Boolean {
-            if(p1 == EditorInfo.IME_ACTION_DONE) {
+            if (p1 == EditorInfo.IME_ACTION_DONE) {
                 // TODO: 通信処理を実行
                 return true
             }
