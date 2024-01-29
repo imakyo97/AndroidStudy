@@ -23,8 +23,8 @@ class ApiClient {
         .build()
     private val apiService = retrofit.create(ApiService::class.java)
 
-    suspend fun featchWeather(city: String): WeatherData {
-        return apiService.featchWeather(
+    suspend fun fetchWeather(city: String): WeatherData {
+        return apiService.fetchWeather(
             API_KEY, "metric", "ja", city,
         )
     }
