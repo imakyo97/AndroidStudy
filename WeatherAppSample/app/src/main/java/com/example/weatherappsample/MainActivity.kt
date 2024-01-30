@@ -1,12 +1,13 @@
 package com.example.weatherappsample
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.example.weatherappsample.databinding.ActivityMainBinding
+import java.io.IOException
 import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
@@ -34,20 +35,36 @@ class MainActivity : AppCompatActivity() {
     private fun executeFetchWeather(city: String) {
         // Call<T>は以下のような感じで処理する
         // TODO: あとでCall<T>について調べる
-        val fetchWeather = ApiClient().fetchWeather(city)
+//        thread {
+//            runCatching { ApiClient().fetchWeather(city).execute() }
+//                .onSuccess { response ->
+//                    if (response.isSuccessful) {
+//                        response.body().let {
+//                            Log.d("DEBUG", "$it")
+//                        }
+//                    } else {
+//                        val msg = "HTTP error. HTTP status code: ${response.code()}"
+//                        Log.d("DEBUG", msg)
+//                    }
+//                }
+//                .onFailure { t -> Log.e("DEBUG", t.toString()) }
+//        }
+
+        // このコードでも動きそう
         thread {
-            runCatching { fetchWeather.clone().execute() }
-                .onSuccess { response ->
-                    if (response.isSuccessful) {
-                        response.body().let {
-                           Log.d("DEBUG", "$it")
-                        }
-                    } else {
-                        val msg = "HTTP error. HTTP status code: ${response.code()}"
-                        Log.d("DEBUG", msg)
+            try {
+                val response = ApiClient().fetchWeather(city).execute()
+                if (response.isSuccessful) {
+                    response.body().let {
+                        Log.d("DEBUG", "$it")
                     }
+                } else {
+                    val msg = response.message()
+                    Log.d("DEBUG", msg)
                 }
-                .onFailure { t -> Log.e("DEBUG", t.toString()) }
+            } catch (error: IOException) {
+                Log.d("DEBUG", error.toString())
+            }
         }
     }
 }
