@@ -4,4 +4,6 @@
     <string name="et_hint">都市名</string>
     <string name="tv_temp_max_label">最高気温</string>
     <string name="tv_temp_min_label">最低気温</string>
+    <string name="error_dialog">通信エラー</string>
+    <string name="bt_ok">OK</string>
 </resources>

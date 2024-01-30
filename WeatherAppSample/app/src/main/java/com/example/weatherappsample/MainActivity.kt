@@ -1,11 +1,11 @@
 package com.example.weatherappsample
 
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.weatherappsample.databinding.ActivityMainBinding
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
                         }
                         .onFailure { error ->
                             hideProgressBar()
-                            Log.d("DEBUG", "error: $error")
+                            showErrorDialog(error.toString())
                         }
                 }
                 return false
@@ -84,6 +84,14 @@ class MainActivity : AppCompatActivity() {
         private fun hideProgressBar() {
             val progressBar = activityMainBinding.progressBar
             progressBar.visibility = View.INVISIBLE
+        }
+
+        private fun showErrorDialog(msg: String) {
+            AlertDialog.Builder(this@MainActivity)
+                .setTitle(R.string.error_dialog)
+                .setMessage(msg)
+                .setPositiveButton(R.string.bt_ok, null)
+                .show()
         }
     }
 }
