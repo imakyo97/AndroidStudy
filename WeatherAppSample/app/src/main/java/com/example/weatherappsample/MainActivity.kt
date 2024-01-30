@@ -3,6 +3,7 @@ package com.example.weatherappsample
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -27,11 +28,14 @@ class MainActivity : AppCompatActivity() {
         override fun onEditorAction(p0: TextView?, p1: Int, p2: KeyEvent?): Boolean {
             if (p1 == EditorInfo.IME_ACTION_DONE) {
                 lifecycleScope.launch {
+                    showProgressBar()
                     kotlin.runCatching { apiClient.fetchWeather(p0?.text.toString()) }
                         .onSuccess { weatherData ->
+                            hideProgressBar()
                             showWeatherData(weatherData)
                         }
                         .onFailure { error ->
+                            hideProgressBar()
                             Log.d("DEBUG", "error: $error")
                         }
                 }
@@ -70,6 +74,16 @@ class MainActivity : AppCompatActivity() {
                 "50n" -> R.drawable.n50
                 else -> R.drawable.d01
             }
+        }
+
+        private fun showProgressBar() {
+            val progressBar = activityMainBinding.progressBar
+            progressBar.visibility = View.VISIBLE
+        }
+
+        private fun hideProgressBar() {
+            val progressBar = activityMainBinding.progressBar
+            progressBar.visibility = View.INVISIBLE
         }
     }
 }
