@@ -2,11 +2,12 @@ package com.example.weatherappsample
 
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class ApiClient {
-    companion object {
+    private companion object {
         private const val BASE_URL = "https://api.openweathermap.org/data/2.5/"
         private const val API_KEY = ""
     }
@@ -23,7 +24,7 @@ class ApiClient {
         .build()
     private val apiService = retrofit.create(ApiService::class.java)
 
-    suspend fun fetchWeather(city: String): WeatherData {
+    suspend fun fetchWeather(city: String): Response<WeatherData> {
         return apiService.fetchWeather(
             API_KEY, "metric", "ja", city,
         )

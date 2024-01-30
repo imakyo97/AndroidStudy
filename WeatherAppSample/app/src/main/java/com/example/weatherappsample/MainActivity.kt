@@ -1,6 +1,7 @@
 package com.example.weatherappsample
 
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -30,12 +31,25 @@ class MainActivity : AppCompatActivity() {
                 lifecycleScope.launch {
                     showProgressBar()
                     kotlin.runCatching { apiClient.fetchWeather(p0?.text.toString()) }
-                        .onSuccess { weatherData ->
+                        .onSuccess { response ->
+                            // 通信が成功した場合
                             hideProgressBar()
-                            showWeatherData(weatherData)
+                            if (response.isSuccessful) {
+                                // ステータスコード200系
+                                response.body()?.let {
+                                    showWeatherData(it)
+                                }
+                            } else {
+                                // ステータスコード200系以外
+                                val msg = "StatusCode: ${response.code()}, msg: ${response.message()}"
+                                Log.d("DEBUG", msg)
+                                showErrorDialog(msg)
+                            }
                         }
                         .onFailure { error ->
+                            // 通信が失敗した場合
                             hideProgressBar()
+                            Log.d("DEBUG", error.toString())
                             showErrorDialog(error.toString())
                         }
                 }
