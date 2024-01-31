@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">NavigationSample</string>
+    <string name="orange_screen">OrangeScreen</string>
+    <string name="red_screen">RedScreen</string>
+    <string name="replace">replace</string>
+    <string name="bt_pop_back_stack">PopBackStack</string>
 </resources>
