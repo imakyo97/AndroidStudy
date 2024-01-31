@@ -23,6 +23,7 @@ class OrangeScreen : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding?.btNext?.setOnClickListener(OnClickListener())
+        binding?.btNextModal?.setOnClickListener(OnClickListener())
         setFragmentResultListener("result") { _, bundle ->
             val text = bundle.getString("text")
             binding?.etOrange?.setText(text)
@@ -37,9 +38,13 @@ class OrangeScreen : Fragment() {
     private inner class OnClickListener : View.OnClickListener {
         override fun onClick(v: View?) {
             val navController = view?.findNavController()
-            val text = binding?.etOrange?.text.toString()
-            val action = OrangeScreenDirections.actionOrangeScreen2ToRedScreen(text)
-            navController?.navigate(action)
+            if (v?.id == R.id.btNext) {
+                val text = binding?.etOrange?.text.toString()
+                val action = OrangeScreenDirections.actionOrangeScreen2ToRedScreen(text)
+                navController?.navigate(action)
+            } else {
+                navController?.navigate(R.id.action_orangeScreen_to_cyanScreen)
+            }
         }
     }
 }

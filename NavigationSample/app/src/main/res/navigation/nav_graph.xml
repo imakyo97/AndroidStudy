@@ -14,6 +14,12 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_orangeScreen_to_cyanScreen"
+            app:destination="@id/cyanScreen"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/await_exit"
+            app:popExitAnim="@anim/slide_out_bottom" />
     </fragment>
     <fragment
         android:id="@+id/redScreen"
@@ -23,4 +29,8 @@
             android:name="text"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/cyanScreen"
+        android:name="com.example.navigationsample.CyanScreen"
+        android:label="CyanScreen" />
 </navigation>

@@ -4,4 +4,6 @@
     <string name="red_screen">RedScreen</string>
     <string name="next">次へ</string>
     <string name="back">戻る</string>
+    <string name="next_modal">次へ（モーダル）</string>
+    <string name="back_modal">戻る（モーダル）</string>
 </resources>
