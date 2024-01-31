@@ -2,6 +2,6 @@
     <string name="app_name">NavigationSample</string>
     <string name="orange_screen">OrangeScreen</string>
     <string name="red_screen">RedScreen</string>
-    <string name="replace">replace</string>
-    <string name="bt_pop_back_stack">PopBackStack</string>
+    <string name="next">次へ</string>
+    <string name="back">戻る</string>
 </resources>

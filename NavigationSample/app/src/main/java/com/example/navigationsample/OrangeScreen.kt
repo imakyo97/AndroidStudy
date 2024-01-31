@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import com.example.navigationsample.databinding.FragmentOrangeScreenBinding
 
 class OrangeScreen : Fragment() {
@@ -21,8 +22,7 @@ class OrangeScreen : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.orange_screen)
-        binding?.btReplace?.setOnClickListener(OnClickListener())
+        binding?.btNext?.setOnClickListener(OnClickListener())
     }
 
     override fun onDestroyView() {
@@ -32,11 +32,8 @@ class OrangeScreen : Fragment() {
 
     private inner class OnClickListener: View.OnClickListener {
         override fun onClick(v: View?) {
-            val transaction = parentFragmentManager.beginTransaction()
-            transaction.setReorderingAllowed(true)
-            transaction.addToBackStack("OrangeScreen")
-            transaction.replace(R.id.container_view, RedScreen::class.java, null)
-            transaction.commit()
+            val navController = view?.findNavController()
+            navController?.navigate(R.id.redScreen)
         }
     }
 }

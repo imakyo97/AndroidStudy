@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.findNavController
 import com.example.navigationsample.databinding.FragmentRedScreenBinding
 
 class RedScreen : Fragment() {
@@ -21,8 +22,7 @@ class RedScreen : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.red_screen)
-        binding?.btPopBackStack?.setOnClickListener(OnClickListener())
+        binding?.btBack?.setOnClickListener(OnClickListener())
     }
 
     override fun onDestroyView() {
@@ -32,7 +32,8 @@ class RedScreen : Fragment() {
 
     private inner class OnClickListener: View.OnClickListener {
         override fun onClick(v: View?) {
-            parentFragmentManager.popBackStack()
+            val navController = view?.findNavController()
+            navController?.popBackStack()
         }
     }
 }
