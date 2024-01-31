@@ -13,3 +13,5 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
     }
 }
+
+// TODO: アニメーションは（https://stackoverflow.com/questions/21026409/fragment-transaction-animation-slide-in-and-slide-out）からもらった
